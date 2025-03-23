@@ -7,8 +7,10 @@ require (
 	github.com/charmbracelet/bubbletea v1.3.4
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/dgraph-io/badger/v4 v4.2.0
+	github.com/go-color-term/go-color-term v0.4.0
 	github.com/ipfs/boxo v0.29.1
 	github.com/ipfs/kubo v0.34.0
+	github.com/muesli/reflow v0.3.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.0
 	github.com/zeebo/blake3 v0.2.4
@@ -65,7 +67,6 @@ require (
 	github.com/gammazero/chanqueue v1.1.0 // indirect
 	github.com/gammazero/deque v1.0.0 // indirect
 	github.com/getsentry/sentry-go v0.27.0 // indirect
-	github.com/go-color-term/go-color-term v0.4.0 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -165,7 +166,6 @@ require (
 	github.com/mr-tron/base58 v1.2.0 // indirect
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
-	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/multiformats/go-base32 v0.1.0 // indirect
 	github.com/multiformats/go-base36 v0.2.0 // indirect

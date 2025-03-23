@@ -40,7 +40,7 @@ clean:
 
 lemon3: .farcaster-built $(SOURCES)
 	@echo -e "$(GREEN)Building lemon3 ${LEMON3_VER} $(NC)"
-	go build -o $@ -ldflags "-w -s -X main.LEMON3_VERSION=${LEMON3_VER} \
+	go build -o $@ -ldflags "-w -s -X github.com/vrypan/lemon3/config.LEMON3_VERSION=${LEMON3_VER} \
 	-X google.golang.org/protobuf/reflect/protoregistry.conflictPolicy=ignore"
 
 
