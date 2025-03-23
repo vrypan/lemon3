@@ -14,7 +14,12 @@ Use `lemon3 --help` to see all options.
 
 `lemon3` will start with an empty list of casts and wait for new casts containing an `enclosure+ipfs://` embed.
 
-If you want to populate the initial view with casts from a user, use `lemon3 start <fname1> <fname2> ...`. Try `lemon3 start fc1` to see it in action (fc1 is an account I use for tests).
+If you want to populate the initial view with casts from a user, use `lemon3 start <fname1> <fname2> ...`. Try 
+
+```
+lemon3 start fc1
+```
+to see it in action (fc1 is an account I use for tests, and it's important to actually see something right now!).
 
 **Note**: `lemon3` connects to the configured Farcaster node using a gRPC streaming API. This is not open in public hubs like hoyt.farcaster.xyz. You will probably need your own hub. Configure it using
 - `lemon3 config set hub.host <ip or hostname>`
