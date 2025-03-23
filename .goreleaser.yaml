@@ -25,6 +25,7 @@ builds:
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser
       - -X github.com/vrypan/lemon3/config.LEMON3_VERSION={{.Version}}
+      - -X google.golang.org/protobuf/reflect/protoregistry.conflictPolicy=ignore
 
 archives:
   - formats: ["tar.gz"]
