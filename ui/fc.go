@@ -12,9 +12,7 @@ import (
 func (m *MainModel) SubscribeToFcEvents() tea.Cmd {
 	stream, err := m.Hub.Subscribe(1)
 	if err != nil {
-		return func() tea.Msg {
-			return SystemError{Error: err}
-		}
+		m.chErrs <- fmt.Errorf("Hub does not support streaming. Will not auto-update casts.")
 	}
 
 	go func() {

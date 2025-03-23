@@ -40,7 +40,7 @@ func tui(cmd *cobra.Command, args []string) {
 	db.Open()
 	defer db.Close()
 
-	hub := fctools.NewFarcasterHub(config.GetString("hub.address")+":"+config.GetString("hub.port"), config.GetBool("hub.ssl"))
+	hub := fctools.NewFarcasterHub(config.GetString("hub.host")+":"+config.GetString("hub.port"), config.GetBool("hub.ssl"))
 	if hub == nil {
 		fmt.Println("Error connecting to Farcaster hub.")
 		fmt.Println("Make sure the hub you are using allows gRPC streaming.")

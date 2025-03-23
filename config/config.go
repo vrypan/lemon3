@@ -31,7 +31,6 @@ func Load() string { // Load config and return config file path
 		"key.public":  "",
 		"key.private": "",
 		"key.fid":     0,
-		"host.addr":   "0.0.0.0:8080",
 		"db.path":     "",
 	}
 	for key, value := range defaults {

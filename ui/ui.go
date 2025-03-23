@@ -104,6 +104,7 @@ func (m *MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, m.listenForNewFcEvents()
 	case ErrorEvent:
 		m.Err = msg.Error
+		m.statusMsg = msg.Error.Error()
 		return m, m.listenForErrors()
 	case SystemError:
 		m.Err = msg.Error
