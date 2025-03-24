@@ -2,13 +2,16 @@
 
 lemon3 is a file-sharing client that uses IPFS and Farcaster.
 
+Check out [lemon3: Farcaster+IPFS = Decentralized RSS enclosures and file sharing](https://blog.vrypan.net/2025/03/23/lemon3-farcaster-ipfs-decentralized-file-sharing/) about the name,
+the idea and what's next.
+
 # Install
 
 - **Binaries**: [pre-built binaries](https://github.com/vrypan/lemon3/releases)
 - **Source**: Clone the repo, and run `make`. Copy the generated binaries `lemon3` to a location in your $PATH.
 - **macOS/Homebrew**: `brew install vrypan/lemon3/lemon3`
 
-## Use
+# Use
 
 Use `lemon3 --help` to see all options.
 
