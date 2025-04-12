@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Lemon3</title>
+        <meta name="description" content="File sharing using IPFS and Farcaster" />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://lemon3.vrypan.net" />
+        <meta property="og:title" content="Lemon3" />
+        <meta property="og:description" content="File sharing using IPFS and Farcaster" />
+        <meta property="og:image" content="https://lemon3.vrypan.net/og-image.png" />
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://lemon3.vrypan.net" />
+        <meta property="twitter:title" content="Lemon3" />
+        <meta property="twitter:description" content="File sharing using IPFS and Farcaster" />
+        <meta property="twitter:image" content="https://lemon3.vrypan.net/og-image.png" />
+
+        <!-- Farcaster Frame -->
+        <meta
+            property="fc:frame"
+            content='{"version":"next","imageUrl":"https://lemon3.vrypan.net/og-image.png","button":{"title":"View Repository","action":{"type":"launch_frame","url":"https://lemon3.vrypan.net","name":"Lemon3","splashImageUrl":"https://lemon3.vrypan.net/splash-image.png","splashBackgroundColor":"#ffffff"}}}'
+        />
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <h1 id="lemon3">lemon3</h1>
+<p>lemon3 is a file-sharing client that uses IPFS and Farcaster.</p>
+<p>Check out <a href="https://blog.vrypan.net/2025/03/23/lemon3-farcaster-ipfs-decentralized-file-sharing/">lemon3: Farcaster+IPFS = Decentralized RSS enclosures and file sharing</a> about the name,<br />
+the idea and what&rsquo;s next.</p>
+<h1 id="install">Install</h1>
+<ul>
+<li><strong>Binaries</strong>: <a href="https://github.com/vrypan/lemon3/releases">pre-built binaries</a></li>
+<li><strong>Source</strong>: Clone the repo, and run <code>make</code>. Copy the generated binaries <code>lemon3</code> to a location in your $PATH.</li>
+<li><strong>macOS/Homebrew</strong>: <code>brew install vrypan/lemon3/lemon3</code></li>
+</ul>
+<h1 id="use">Use</h1>
+<p>Use <code>lemon3 --help</code> to see all options.</p>
+<p><code>lemon3</code> will start with an empty list of casts and wait for new casts containing an <code>enclosure+ipfs://</code> embed.</p>
+<p>If you want to populate the initial view with casts from a user, use <code>lemon3 start &lt;fname1&gt; &lt;fname2&gt; ...</code>. Try </p>
+<div class="codehilite"><pre><span></span><code>lemon3 start fc1
+</code></pre></div>
+
+<p>to see it in action (fc1 is an account I use for tests, and it&rsquo;s important to actually see something right now!).</p>
+<p><strong>Note</strong>: <code>lemon3</code> connects to the configured Farcaster node using a gRPC streaming API. This is not open in public hubs like hoyt.farcaster.xyz. You will probably need your own hub. Configure it using<br />
+- <code>lemon3 config set hub.host &lt;ip or hostname&gt;</code><br />
+- <code>lemon3 config set hub.ssl &lt;true/false&gt;</code></p>
+<p>If you leave the standard configuration with hoyt, you will not get real-time<br />
+updates -but the rest will work.</p>
+<p>In order to upload files, you need a Farcaster appkey. The easiest way to do so is to use <a href="https://www.castkeys.xyz/">CastKeys</a>. Once you have your private key, run <code>lemon3 config set key.private &lt;private_key&gt;</code> to configure it.</p>
+
+        <a
+            href="https://github.com/vrypan/lemon3"
+            class="github-button"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><svg
+                height="32"
+                aria-hidden="true"
+                viewBox="0 0 16 16"
+                version="1.1"
+                width="32"
+            >
+                <path
+                    fill-rule="evenodd"
+                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59
+                 .4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49
+                 -2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+                 -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82
+                 .72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07
+                 -1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+                 -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82
+                 .64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04
+                 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82
+                 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73
+                 .54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013
+                 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+                ></path>
+            </svg>
+            View on GitHub
+        </a>
+        <!-- Farcaster Frame SDK -->
+        <script type="module">
+            import { sdk } from "https://esm.sh/@farcaster/frame-sdk";
+
+            // Call ready when the page is loaded
+            async function rewriteLinks() {
+                const links = document.querySelectorAll("a[href^='http']");
+                for (let link of links) {
+                    link.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        sdk.actions.openUrl(link.getAttribute("href"));
+                    });
+                }
+            }
+            window.addEventListener("load", async () => {
+                try {
+                    await sdk.actions.ready();
+                    console.log("Frame is ready");
+                    const ctx = await sdk.context;
+                    ctx ? await rewriteLinks() : null;
+                } catch (e) {
+                    console.error("Failed to initialize frame:", e);
+                }
+            });
+        </script>
+    </body>
+</html>
