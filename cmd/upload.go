@@ -14,11 +14,6 @@ import (
 	"github.com/vrypan/lemon3/ipfsclient"
 )
 
-var hubConf = fcclient.HubConfig{
-	Host: "hub.merv.fun:3383",
-	Ssl:  false,
-}
-
 // uploadCmd represents the upload command
 var uploadCmd = &cobra.Command{
 	Use:   "upload <file>",
@@ -126,6 +121,10 @@ func upload(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	hubConf := fcclient.HubConfig{
+		Host: config.GetString("farcaster.node"),
+		Ssl:  config.GetString("farcaster.ssl") == "true",
+	}
 	username := config.GetString("farcaster.fname")
 	userkey := config.GetString("farcaster.appkey")
 
