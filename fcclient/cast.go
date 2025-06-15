@@ -3,6 +3,7 @@ package fcclient
 import (
 	"crypto/ed25519"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"time"
 
@@ -89,4 +90,34 @@ func CreateMessage(messageData *pb.MessageData, signerPrivate []byte, signerPubl
 		Signer:          signerPublic,
 		DataBytes:       dataBytes,
 	}
+}
+
+func CastGetEmbedUrls(hubConf HubConfig, username string, hash string) ([]string, error) {
+	var err error
+
+	hub := NewFarcasterHub(hubConf)
+	defer hub.Close()
+
+	fid, err := hub.GetFidByUsername(username)
+	if err != nil {
+		return nil, fmt.Errorf("Unable to get FID for %s: %v\n", username, err)
+	}
+	hashBytes, err := hex.DecodeString(hash[2:])
+	if err != nil {
+		return nil, fmt.Errorf("Error parsing hash %s: %v\n", hash, err)
+	}
+	cast, err := hub.GetCast(fid, hashBytes)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to get cast: %v\n", err)
+	}
+
+	embeds := cast.Data.GetCastAddBody().Embeds
+
+	links := []string{}
+	for _, e := range embeds {
+		if l := e.GetUrl(); l != "" {
+			links = append(links, l)
+		}
+	}
+	return links, nil
 }
