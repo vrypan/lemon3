@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"strings"
 	"time"
 
 	"net/http"
@@ -84,8 +86,28 @@ func upload(cmd *cobra.Command, args []string) {
 	if s, _ = cmd.Flags().GetString("mime"); s != "" {
 		mimeType = s
 	}
-	if s, _ = cmd.Flags().GetString("description"); s != "" {
-		fileDescription = s
+
+	fileDescription, _ = cmd.Flags().GetString("description")
+	if strings.HasPrefix(fileDescription, "@") {
+		source := strings.TrimPrefix(fileDescription, "@")
+
+		var data []byte
+		var err error
+
+		if source == "-" {
+			data, err = io.ReadAll(os.Stdin)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading description from stdin: %v\n", err)
+				os.Exit(1)
+			}
+		} else {
+			data, err = os.ReadFile(source)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading description file: %v\n", err)
+				os.Exit(1)
+			}
+		}
+		fileDescription = strings.TrimSpace(string(data))
 	}
 
 	data := map[string]any{
@@ -138,13 +160,12 @@ func upload(cmd *cobra.Command, args []string) {
 
 func init() {
 	rootCmd.AddCommand(uploadCmd)
-	uploadCmd.Flags().String("title", "", "File title")
+	uploadCmd.Flags().String("title", "", "Title")
 	uploadCmd.Flags().String("name", "", "Filename (override original filename)")
-	uploadCmd.Flags().String("mime", "", "mime/type (override automatic mime/tuype detection)")
-	uploadCmd.Flags().String("description", "", "A longer description of the file")
-	uploadCmd.Flags().String("artwork", "", "File path to artwork image.")
+	uploadCmd.Flags().String("mime", "", "mime/type (override automatic mime/type detection)")
+	uploadCmd.Flags().String("description", "", "Description. @file will read the text from file, @- will read the text from stdin.")
+	uploadCmd.Flags().String("artwork", "", "Path to artwork image.")
 	uploadCmd.Flags().String("cast", "Uploaded with lemon3", "Cast text")
-
 }
 
 func detectMimeType(path string) (string, error) {
