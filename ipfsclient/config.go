@@ -17,6 +17,12 @@ func Init(apiUrl string) {
 		os.Exit(1)
 	}
 }
+func Initialized() bool {
+	if kuboAPI != "" {
+		return true
+	}
+	return false
+}
 
 func testConnection() error {
 	url := fmt.Sprintf("%s/id", kuboAPI)

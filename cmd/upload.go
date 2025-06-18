@@ -144,11 +144,13 @@ func upload(cmd *cobra.Command, args []string) {
 	}
 
 	hubConf := fcclient.HubConfig{
-		Host: config.GetString("farcaster.node"),
-		Ssl:  config.GetString("farcaster.ssl") == "true",
+		Host: config.GetString("farcaster.node.address"),
+		Ssl:  config.GetString("farcaster.node.ssl") == "true",
+		Key:  config.GetString("farcaster.node.apikey"),
 	}
-	username := config.GetString("farcaster.fname")
-	userkey := config.GetString("farcaster.appkey")
+	fmt.Println(hubConf)
+	username := config.GetString("farcaster.account.fname")
+	userkey := config.GetString("farcaster.account.appkey")
 
 	castText, err := cmd.Flags().GetString("cast")
 	castHash := fcclient.Cast(hubConf, username, userkey, castText, dagCid)

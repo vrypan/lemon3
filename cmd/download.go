@@ -8,6 +8,7 @@ import (
 	"github.com/vrypan/lemon3/config"
 	"github.com/vrypan/lemon3/fcclient"
 	"github.com/vrypan/lemon3/ipfsclient"
+	"github.com/vrypan/lemon3/lemon3libs"
 )
 
 var downloadCmd = &cobra.Command{
@@ -24,14 +25,14 @@ used in Farcaster URLs.`,
 }
 
 func download(cmd *cobra.Command, args []string) {
-	if len(args) == 0 {
-		fmt.Println("Usage: lemon3 download @user/<hash>")
-		return
-	}
-
 	configFile := config.Load()
 	if configFile == "" {
 		fmt.Println("Please run \"lemon3 setup\" first.")
+		return
+	}
+
+	if len(args) == 0 {
+		fmt.Println("Usage: lemon3 download @user/<hash>")
 		return
 	}
 
@@ -45,11 +46,13 @@ func download(cmd *cobra.Command, args []string) {
 	hash := parts[1]
 
 	hubConf := fcclient.HubConfig{
-		Host: config.GetString("farcaster.node"),
-		Ssl:  config.GetString("farcaster.ssl") == "true",
+		Host: config.GetString("farcaster.node.address"),
+		Ssl:  config.GetString("farcaster.node.ssl") == "true",
+		Key:  config.GetString("farcaster.node.apikey"),
 	}
+	fcclient.Init(hubConf)
 
-	embeds, err := fcclient.CastGetEmbedUrls(hubConf, username, hash)
+	embeds, err := fcclient.CastGetEmbedUrls(username, hash)
 	if err != nil {
 		fmt.Printf("[!] Failed to fetch cast: %v\n", err)
 		return
@@ -70,39 +73,16 @@ func download(cmd *cobra.Command, args []string) {
 
 	ipfsclient.Init(config.GetString("ipfs.hub"))
 
-	// Fetch DAG metadata
-	metadata, err := ipfsclient.DagGet(cid)
+	meta, err := lemon3libs.FromCid(cid)
 	if err != nil {
-		fmt.Printf("[!] Failed to fetch DAG: %v\n", err)
+		fmt.Printf("[!] %v\n", err)
 		return
 	}
-
-	enclosedField, ok := metadata["enclosed"]
-	if !ok {
-		fmt.Println("[!] DAG does not contain 'enclosed' field.")
-		return
-	}
-
-	enclosedMap, ok := enclosedField.(map[string]any)
-	if !ok {
-		fmt.Println("[!] 'enclosed' field is not the expected type.")
-		return
-	}
-
-	enclosed, ok := enclosedMap["/"].(string)
-	if !ok {
-		fmt.Println("[!] DAG does not contain valid 'enclosed' field.")
-		return
-	}
-
-	filename, ok := metadata["filename"].(string)
-	if !ok || filename == "" {
-		filename = enclosed // fallback
-	}
+	enclosed := meta.Enclosed["/"]
+	filename := meta.Filename
 
 	fmt.Printf("[↓] Downloading %s from %s...\n", filename, enclosed)
-	size, _ := metadata["size"].(float64) // JSON uses float64 for numbers
-	err = ipfsclient.CatCIDToFile(enclosed, filename, int64(size))
+	err = ipfsclient.CatCIDToFile(enclosed, filename, meta.Size)
 	if err != nil {
 		fmt.Printf("[!] Failed to download file: %v\n", err)
 		return

@@ -7,7 +7,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"net/url"
 )
 
 // dagPut serializes JSON to DAG-CBOR and stores it
@@ -80,32 +79,6 @@ func DagGet(cid string) (map[string]any, error) {
 	}
 
 	var result map[string]any
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-func DagGetPath(path string) (any, error) {
-	url := fmt.Sprintf("%s/dag/get?arg=%s", kuboAPI, url.QueryEscape(path))
-	req, err := http.NewRequest("POST", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("dag/get path failed: %s", string(body))
-	}
-
-	var result any
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}

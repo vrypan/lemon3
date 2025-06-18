@@ -19,18 +19,30 @@ import (
 
 const FARCASTER_EPOCH int64 = 1609459200
 
+var hubInstance *FarcasterHub
+
 type HubConfig struct {
 	Host string
 	Ssl  bool
+	Key  string
 }
 type FarcasterHub struct {
-	hubAddr    string
 	conn       *grpc.ClientConn
 	client     pb.HubServiceClient
 	ctx        context.Context
 	ctx_cancel context.CancelFunc
 }
 
+func Init(conf HubConfig) {
+	hubInstance = NewFarcasterHub(conf)
+}
+
+func IsInitialized() bool {
+	if hubInstance != nil {
+		return true
+	}
+	return false
+}
 func apiKeyInterceptor(header, value string) grpc.UnaryClientInterceptor {
 	return func(
 		ctx context.Context,
@@ -53,19 +65,29 @@ func NewFarcasterHub(conf HubConfig) *FarcasterHub {
 	if conf.Ssl {
 		cred = credentials.NewClientTLSFromCert(nil, "")
 	}
+	var interceptor grpc.UnaryClientInterceptor
+
+	if conf.Key != "" {
+		interceptor = apiKeyInterceptor("x-api-key", conf.Key)
+	}
 
 	conn, err := grpc.Dial(
 		conf.Host,
 		grpc.WithTransportCredentials(cred),
+		grpc.WithUnaryInterceptor(interceptor),
 		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(20*1024*1024)),
 	)
+	if err != nil {
+		log.Fatalf("Failed to connect: %v", err)
+	}
+
 	if err != nil {
 		log.Fatalf("Did not connect: %v", err)
 	}
 	client := pb.NewHubServiceClient(conn)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	return &FarcasterHub{
-		hubAddr:    conf.Host,
 		conn:       conn,
 		client:     client,
 		ctx:        ctx,
@@ -76,6 +98,14 @@ func NewFarcasterHub(conf HubConfig) *FarcasterHub {
 func (h FarcasterHub) Close() {
 	h.conn.Close()
 	h.ctx_cancel()
+}
+
+func (hub FarcasterHub) GetCastsByFid(fid uint64, pageSize uint32, reverse bool) (*pb.MessagesResponse, error) {
+	msg, err := hub.client.GetCastsByFid(hub.ctx, &pb.FidRequest{Fid: fid, Reverse: &reverse, PageSize: &pageSize})
+	if err != nil {
+		return nil, err
+	}
+	return msg, nil
 }
 
 func (hub FarcasterHub) SubmitMessageData(messageData *pb.MessageData, signerPrivate, signerPublic []byte) (*pb.Message, error) {
@@ -143,15 +173,6 @@ func (hub FarcasterHub) GetFidByUsername(username string) (uint64, error) {
 		return 0, fmt.Errorf("failed to get username proof: %w", err)
 	}
 	return message.Fid, nil
-}
-
-func (hub FarcasterHub) GetCastsByFid(fid uint64, pageSize uint32) ([]*pb.Message, error) {
-	reverse := true
-	msg, err := hub.client.GetCastsByFid(hub.ctx, &pb.FidRequest{Fid: fid, Reverse: &reverse, PageSize: &pageSize})
-	if err != nil {
-		return nil, err
-	}
-	return msg.Messages, nil
 }
 
 func (hub FarcasterHub) GetReactionsByFid(fid uint64, reaction string, pageSize uint32) ([]*pb.Message, error) {

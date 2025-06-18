@@ -92,13 +92,12 @@ func CreateMessage(messageData *pb.MessageData, signerPrivate []byte, signerPubl
 	}
 }
 
-func CastGetEmbedUrls(hubConf HubConfig, username string, hash string) ([]string, error) {
+func CastGetEmbedUrls(username string, hash string) ([]string, error) {
 	var err error
-
-	hub := NewFarcasterHub(hubConf)
-	defer hub.Close()
-
-	fid, err := hub.GetFidByUsername(username)
+	if !IsInitialized() {
+		panic("fcclient.CastGetEmbeds called but hubInstance is not initialized.")
+	}
+	fid, err := hubInstance.GetFidByUsername(username)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to get FID for %s: %v\n", username, err)
 	}
@@ -106,7 +105,7 @@ func CastGetEmbedUrls(hubConf HubConfig, username string, hash string) ([]string
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing hash %s: %v\n", hash, err)
 	}
-	cast, err := hub.GetCast(fid, hashBytes)
+	cast, err := hubInstance.GetCast(fid, hashBytes)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to get cast: %v\n", err)
 	}
@@ -120,4 +119,21 @@ func CastGetEmbedUrls(hubConf HubConfig, username string, hash string) ([]string
 		}
 	}
 	return links, nil
+}
+
+func GetCastsByFname(username string, pageSize uint32, reverse bool) ([]*pb.Message, error) {
+	var err error
+	if !IsInitialized() {
+		panic("fcclient.CastGetEmbeds called but hubInstance is not initialized.")
+	}
+	fid, err := hubInstance.GetFidByUsername(username)
+	if err != nil {
+		return nil, fmt.Errorf("Unable to get FID for %s: %v\n", username, err)
+	}
+	msg, err := hubInstance.GetCastsByFid(fid, pageSize, reverse)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to get casts for %s: %v\n", username, err)
+	}
+	return msg.Messages, nil
 }
