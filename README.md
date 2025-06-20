@@ -29,6 +29,8 @@ Future versions will try to bundle these components with lemon3.
 
 # Example
 
+
+## Uploading files
 ```
 lemon3 upload cnApr14.mp3 \
 --title="Answers for Shel Israel about the origins of blogging and RSS" \
@@ -58,3 +60,45 @@ Output:
 And here is the result: https://farcaster.xyz/vrypan.eth/0xcd3141a47b98685c292b55c44f932e221753e51b
 
 You can also check this one for video embeds: https://farcaster.xyz/fc1/0xbbcba55feeef8b522843b1d73c8f9dec3a2f4f7a
+
+## Downloading a single file
+
+```
+lemon3 download @fc1/0x4ff0e439bb795f98b1970217e6ad4e1a56e048fa
+
+[↓] Downloading plan9_from_outer_space.mp4 from QmXokMFSAa4KL12nx66RzLeUPpvJs3ghD9fAGnrbCKiHWZ...
+[✓] Downloaded 773495003 / 773495003 bytes (100.0%)
+[✓] Saved as plan9_from_outer_space.mp4
+```
+
+## Downloading a user's feed
+
+```
+lemon3 downloadfeed @fc1
+
+[↓] Downloading plan9_from_outer_space.mp4 from QmXokMFSAa4KL12nx66RzLeUPpvJs3ghD9fAGnrbCKiHWZ...
+[✓] Downloaded 773495003 / 773495003 bytes (100.0%)
+
+[↓] Downloading cnApr14.mp3 from QmPAnBDf2CHxNJeVKq1nepDXrTkn7MwRnVWjeofhtrhzES...
+[✓] Downloaded 13622625 / 13622625 bytes (100.0%)
+
+[↓] Downloading The Man Who Knew Too Much.mp4 from Qme7tFJFeBZqbSudoom8xKA1FNXoUkUhBt8ygPWXoE3LQV...
+[✓] Downloaded 562829407 / 562829407 bytes (100.0%)
+
+[↓] Downloading CC_1916_07_10_TheVagabond.mp4 from QmP46kY1hyyzZEF9sWUXxjHpP1kr7dRpbuYazDV8Wx6yzF...
+[✓] Downloaded 150003982 / 150003982 bytes (100.0%)
+
+[↓] Downloading CC_1916_07_10_TheVagabond.mp4 from QmP46kY1hyyzZEF9sWUXxjHpP1kr7dRpbuYazDV8Wx6yzF...
+[✓] Downloaded 150003982 / 150003982 bytes (100.0%)
+```
+
+And this is my download dir
+
+```
+ls -l ~/Desktop/lemon3/fc1/
+total 2958976
+-rw-r--r--@ 1 vrypan  staff  150003982 Jun 20 22:38 CC_1916_07_10_TheVagabond.mp4
+-rw-r--r--@ 1 vrypan  staff   13622625 Jun 20 22:38 cnApr14.mp3
+-rw-r--r--@ 1 vrypan  staff  773495003 Jun 20 22:38 plan9_from_outer_space.mp4
+-rw-r--r--@ 1 vrypan  staff  562829407 Jun 20 22:38 The Man Who Knew Too Much.mp4
+```
