@@ -14,7 +14,7 @@ and this is a totally new codebase.
 
 - **Binaries**: [pre-built binaries](https://github.com/vrypan/lemon3/releases)
 - **Source**: Clone the repo, and run `make`. Copy the generated binaries `lemon3` to a location in your $PATH.
-- **macOS/Homebrew**: `brew install vrypan/lemon3/lemon3`
+- **macOS/Homebrew**: `brew install vrypan/tap/lemon3`
 
 # Use
 
