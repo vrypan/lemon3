@@ -1,5 +1,3 @@
-version: 2
-
 before:
   hooks:
     - go mod tidy
@@ -17,7 +15,7 @@ builds:
       - -X main.LEMON3_VERSION={{.Version}}
 
 archives:
-  - formats: ["tar.gz"]
+  - format: tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
@@ -27,7 +25,7 @@ archives:
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     format_overrides:
       - goos: windows
-        formats: ["zip"]
+        format: zip
 
 changelog:
   sort: asc
@@ -59,3 +57,4 @@ brews:
       owner: vrypan
       name: homebrew-tap
       branch: main
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
