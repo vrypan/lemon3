@@ -5,7 +5,7 @@ go 1.24.3
 require (
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
-	github.com/vrypan/farcaster-go v0.3.0
+	github.com/vrypan/farcaster-go v0.11.0
 	github.com/zeebo/blake3 v0.2.4
 	google.golang.org/grpc v1.72.2
 	google.golang.org/protobuf v1.36.6
